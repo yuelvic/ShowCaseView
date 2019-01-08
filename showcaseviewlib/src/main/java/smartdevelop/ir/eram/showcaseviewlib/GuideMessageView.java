@@ -10,61 +10,83 @@ import android.text.Spannable;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import smartdevelop.ir.eram.showcaseviewlib.util.BitmapUtil;
 
 /**
  * Created by Mohammad Reza Eram  on 20/01/2018.
  */
 
-class GuideMessageView extends LinearLayout {
+class GuideMessageView extends RelativeLayout {
 
     private Paint mPaint;
     private RectF mRect;
 
     private TextView mTitleTextView;
     private TextView mContentTextView;
+    private ImageView mHeaderImage;
 
+    private LinearLayout mTextContainer;
 
     GuideMessageView(Context context) {
         super(context);
 
         float density = context.getResources().getDisplayMetrics().density;
         setWillNotDraw(false);
-        setOrientation(VERTICAL);
-        setGravity(Gravity.CENTER);
-
-        mRect = new RectF();
-        mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mPaint.setStrokeCap(Paint.Cap.ROUND);
 
         final int padding = (int) (10 * density);
         final int paddingBetween = (int) (3 * density);
+
+        LayoutParams params =
+                new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.setMargins(0, 100, 0, 0);
+        mTextContainer = new TextContainer(context);
+        mTextContainer.setLayoutParams(params);
+        mTextContainer.setPadding(0, 30, 0, 0);
+        addView(mTextContainer);
 
         mTitleTextView = new TextView(context);
         mTitleTextView.setPadding(padding, padding, padding, paddingBetween);
         mTitleTextView.setGravity(Gravity.CENTER);
         mTitleTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
         mTitleTextView.setTextColor(Color.BLACK);
-        addView(mTitleTextView, new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        mTextContainer.addView(mTitleTextView, new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
         mContentTextView = new TextView(context);
         mContentTextView.setTextColor(Color.BLACK);
         mContentTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
         mContentTextView.setPadding(padding, paddingBetween, padding, padding);
         mContentTextView.setGravity(Gravity.CENTER);
-        addView(mContentTextView, new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        mTextContainer.addView(mContentTextView, new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+        LayoutParams imageParams = new LayoutParams(150, 150);
+        imageParams.addRule(CENTER_HORIZONTAL, TRUE);
+        mHeaderImage = new ImageView(context);
+        mHeaderImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        mHeaderImage.setLayoutParams(imageParams);
+        addView(mHeaderImage, imageParams);
     }
 
 
     public void setTitle(String title) {
         if (title == null) {
-            removeView(mTitleTextView);
+            mTextContainer.removeView(mTitleTextView);
             return;
         }
         mTitleTextView.setText(title);
     }
 
+    public void setImage(String imageUrl) {
+        if (imageUrl == null) {
+            removeView(mHeaderImage);
+            return;
+        }
+        BitmapUtil.loadImage(imageUrl, mHeaderImage, getContext());
+    }
 
     public void setContentText(String content) {
         mContentTextView.setText(content);
@@ -100,20 +122,35 @@ class GuideMessageView extends LinearLayout {
 
     int location[] = new int[2];
 
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
+    class TextContainer extends LinearLayout {
+
+        public TextContainer(Context context) {
+            super(context);
+
+            setWillNotDraw(false);
+            setOrientation(VERTICAL);
+            setGravity(Gravity.CENTER);
+
+            mRect = new RectF();
+            mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            mPaint.setStrokeCap(Paint.Cap.ROUND);
+        }
+
+        @Override
+        protected void onDraw(Canvas canvas) {
+            super.onDraw(canvas);
 
 
-        this.getLocationOnScreen(location);
+            this.getLocationOnScreen(location);
 
 
-        mRect.set(getPaddingLeft(),
-                getPaddingTop(),
-                getWidth() - getPaddingRight(),
-                getHeight() - getPaddingBottom());
+            mRect.set(getPaddingLeft(),
+                    getPaddingTop() - 30,
+                    getWidth() - getPaddingRight(),
+                    getHeight() - getPaddingBottom());
 
 
-        canvas.drawRoundRect(mRect, 15, 15, mPaint);
+            canvas.drawRoundRect(mRect, 15, 15, mPaint);
+        }
     }
 }

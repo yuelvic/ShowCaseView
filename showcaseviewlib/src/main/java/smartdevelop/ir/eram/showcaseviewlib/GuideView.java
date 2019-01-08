@@ -372,6 +372,10 @@ public class GuideView extends FrameLayout {
         mIsShowing = true;
     }
 
+    public void setImage(String imageUrl) {
+        mMessageView.setImage(imageUrl);
+    }
+
     public void setTitle(String str) {
         mMessageView.setTitle(str);
     }
@@ -406,7 +410,7 @@ public class GuideView extends FrameLayout {
 
     public static class Builder {
         private View targetView;
-        private String title, contentText;
+        private String imageUrl, title, contentText;
         private Gravity gravity;
         private DismissType dismissType;
         private Context context;
@@ -437,6 +441,16 @@ public class GuideView extends FrameLayout {
          **/
         public Builder setGravity(Gravity gravity) {
             this.gravity = gravity;
+            return this;
+        }
+
+        /**
+         *  defining image header
+         *
+         * @param imageUrl url for image
+         */
+        public Builder setImage(String imageUrl) {
+            this.imageUrl = imageUrl;
             return this;
         }
 
@@ -590,6 +604,8 @@ public class GuideView extends FrameLayout {
             float density = context.getResources().getDisplayMetrics().density;
 
             guideView.setTitle(title);
+            if (imageUrl != null)
+                guideView.setImage(imageUrl);
             if (contentText != null)
                 guideView.setContentText(contentText);
             if (titleTextSize != 0)

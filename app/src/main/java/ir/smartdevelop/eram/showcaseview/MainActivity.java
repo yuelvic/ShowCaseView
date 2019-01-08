@@ -32,8 +32,8 @@ public class MainActivity extends AppCompatActivity {
         view5 = findViewById(R.id.view5);
 
         builder = new GuideView.Builder(this)
-                .setTitle("Guide Title Text")
-                .setContentText("Guide Description Text\n .....Guide Description Text\n .....Guide Description Text .....")
+                .setTitle("This is where you Cash-in.")
+                .setContentText("You'll need to top up your Gcash\nfor your future transactions.\nI'll teach you how.")
                 .setGravity(Gravity.center)
                 .setDismissType(DismissType.outside)
                 .setTargetView(view1)
